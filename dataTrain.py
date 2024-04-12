@@ -15,4 +15,4 @@ dataFrame = dr.correctNan(dataFrame, 'Age')
 print(dr.stdDeviation(dataFrame, 'Age'))
 print("average: ",average)
 print(dataFrame)
-
+#print(dr.valProb(dataFrame, 'Age', 10))

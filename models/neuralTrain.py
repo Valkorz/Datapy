@@ -20,6 +20,7 @@ testData = pd.read_csv(testFile) #Load test .csv file
 #Get reference statistics (male survivors, female survivors, age average, total survivors)
 
 dataFrame = dr.correctNan(dataFrame, 'Age')
+testData = dr.correctNan(testData, 'Age')
 average = dr.average(dataFrame, 'Age')
 men = dataFrame.loc[dataFrame.Sex == 'male']["Survived"]
 menPercentage = (sum(men) / len(men)) * 100
@@ -34,17 +35,19 @@ print(dr.valProb(dataFrame, 'Age', 10))
 
 referenceValues = {"menPercentage": menPercentage, "womenPercentage": womenPercentage, "survivors": survivorsPercentage, "average": average}
 
-#Train AI (code based on the Titanic Tutorial example at https://www.kaggle.com/code/alexisbcook/titanic-tutorial)
+#Train AI 
 
 y = dataFrame["Survived"]
 features = ["Pclass", "Sex", "SibSp", "Parch"]
 x = pd.get_dummies(dataFrame[features])
 X_test = pd.get_dummies(testData[features])
 
+print("y = ", y)
+
 x_tensor = torch.tensor(x.values.astype(np.float32))
 y_tensor = torch.tensor(y.values.astype(np.float32))
 
-x_train, x_test, y_train, y_test = train_test_split(x_tensor, y_tensor, test_size=5, random_state=42)
+x_train, x_test, y_train, y_test = train_test_split(x_tensor, y_tensor, test_size=0.2, random_state=42)
 
 scaler = StandardScaler()
 x_train = scaler.fit_transform(x_train)
@@ -65,7 +68,7 @@ class Net(nn.Module):
 
 model = Net()
 
-criterion = nn.BCELoss()  # Binary cross-entropy loss
+criterion = nn.BCELoss() 
 optimizer = optim.Adam(model.parameters(), lr=0.001)
 
 epochs = 100
@@ -73,27 +76,26 @@ for epoch in range(epochs):
     model.train()
     optimizer.zero_grad()
     output = model(x_train)
-    print(model.parameters())
-    num_classes = 5  # Assuming there are 5 classes
+    
+    num_classes = 5 
     y_train_one_hot = torch.zeros(len(y_train), num_classes).scatter_(1, y_train.view(-1, 1).long(), 1)
-    print("Output shape: ", output.shape, "train shape: ", y_train.shape)
+    y_train_one_hot.detach()
+    
     loss = criterion(output, y_train_one_hot)
+    loss.requires_grad = True
     loss.backward()
     optimizer.step()
-    print(f"Epoch [{epoch+1}/{epochs}], Loss: {loss.item()}")
+    
+    #print(f"Epoch [{epoch+1}/{epochs}], Loss: {loss.item()}")
 
-# Evaluate the model
+print("Xtest: ", X_test)
 model.eval()
 with torch.no_grad():
-    output = model(x_test)
-    predictions = (output > 0.5).float()
-    accuracy = (predictions == y_test.view(-1, 1)).float().mean()
-    print("Accuracy:", accuracy.item())
-    
-predictions_array = predictions.cpu().numpy().flatten()  # Convert predictions tensor to NumPy array
-y_test_array = y_test.cpu().numpy().flatten()  # Convert y_test tensor to NumPy array
+    output = model(torch.tensor(X_test.values.astype(np.float32)))
+    predictions = (output > 0.5).float().cpu().numpy().flatten()
 
-output = pd.DataFrame({'PassengerId': testData.PassengerId, 'Survived': predictions.flatten()})
+print(predictions)
+output = pd.DataFrame({'PassengerId': testData['PassengerId'], 'Survived': predictions})
 output.to_csv(".\\generated\\submission.csv", index=False)
 
 #Get statistics from output file (male survivors, female survivors, age average, total survivors)

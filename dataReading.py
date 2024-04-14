@@ -71,8 +71,8 @@ def correctNan(dataFrame : pd.DataFrame, type : str) -> pd.DataFrame:
         currentNum = dataFrame.iloc[i][type]
         
         if np.isnan(currentNum):
-            newDataFrame.iloc[i][type] = avg
-            
+            newDataFrame.at[i, type] = avg
+
     return newDataFrame
 
 
@@ -115,28 +115,29 @@ def valProb(dataFrame : pd.DataFrame, type : str, interval : int) -> pd.DataFram
     minVal = min(dataFrame, type)
     maxVal = max(dataFrame, type)
     data = pd.DataFrame()
-    print("Min: ", minVal)
-    print("Max: ", maxVal)
     
     intervalLength = (int)(maxVal / interval)
     intervals = np.zeros(intervalLength)
     elements = em.enumeratedElement(intervalLength)
     
     for i in range(len(intervals)):
-        intervals[i] += intervalLength * i
+        intervals[i] = intervalLength * i     
         
     for i in range(len(dataFrame)):
         for x in range(len(intervals)):
             val = dataFrame.iloc[i][type]
             if not np.isnan(val):
-                if not (x - 1) < 0 and val >= intervals[x - 1] and val < intervals[x]:
-                    elements.add(intervals[x])
-                elif (x - 1) < 0: 
-                    elements.add(intervals[0])
+                try:
+                    if val > intervals[x - 1] and val < intervals[x]:
+                        elements.add(intervals[x])
+                except:
+                     elements.add(intervals[0])
+                
     
+    elements.dumpInfo()
     #elements.percentageOf(intervals[1])
-    return elements.toDataFrame()
-
+    #return elements.toDataFrame()
+    
         
     
     

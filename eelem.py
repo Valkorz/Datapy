@@ -64,6 +64,10 @@ class enumeratedElement:
         for i in range(len(self.elements)):
             data.add({f"Interval to: {self.elements[i]}": self.elementCount[i]})
         return data
+
+    def dumpInfo(self):
+        for i in range(len(self.elements)):
+            print("Element ", self.elements[i], "of index", i ,"has count of: ", self.elementCount[i])
         
             
             

@@ -94,8 +94,16 @@ with torch.no_grad():
     output = model(torch.tensor(X_test.values.astype(np.float32)))
     predictions = (output > 0.5).float().cpu().numpy().flatten()
 
-print(predictions)
-output = pd.DataFrame({'PassengerId': testData['PassengerId'], 'Survived': predictions})
+num_passengers = len(testData)
+num_columns = len(predictions) // num_passengers
+predictions_reshaped = np.reshape(predictions, (num_passengers, num_columns))
+
+# Create DataFrame with reshaped predictions
+output = pd.DataFrame(predictions_reshaped, columns=['Prediction_1', 'Prediction_2', ..., 'Prediction_419'])
+output['PassengerId'] = testData['PassengerId']
+
+output = output[['PassengerId'] + ['Prediction_' + str(i) for i in range(1, num_columns + 1)]]
+
 output.to_csv(".\\generated\\submission.csv", index=False)
 
 #Get statistics from output file (male survivors, female survivors, age average, total survivors)

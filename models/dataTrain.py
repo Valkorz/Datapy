@@ -9,6 +9,7 @@ import pandas as pd #Import pandas library as "pd"
 import dataReading as dr
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import cross_val_score
+from sklearn.metrics import accuracy_score;
 import numpy as np
 
 trainFile = ".\\data\\train.csv"
@@ -17,8 +18,11 @@ testFile = ".\\data\\test.csv"
 dataFrame = pd.read_csv(trainFile) #Load training .csv file as dataframe
 testData = pd.read_csv(testFile) #Load test .csv file 
 
+#Clear dataframe
+
 average = dr.average(dataFrame, 'Age')
 dataFrame = dr.correctNan(dataFrame, 'Age')
+
 
 #Get reference statistics (male survivors, female survivors, age average, total survivors)
 
@@ -38,11 +42,11 @@ referenceValues = {"menPercentage": menPercentage, "womenPercentage": womenPerce
 #Train AI (code based on the Titanic Tutorial example at https://www.kaggle.com/code/alexisbcook/titanic-tutorial)
 
 y = dataFrame["Survived"]
-features = ["Pclass", "Sex", "SibSp", "Parch"]
+features = ["Age", "Sex"]
 x = pd.get_dummies(dataFrame[features])
 X_test = pd.get_dummies(testData[features])
 
-model = RandomForestClassifier(n_estimators = 300,max_depth = 12,random_state = 1)
+model = RandomForestClassifier(n_estimators = 300,max_depth = 12,random_state = 42)
 model.fit(x,y)
 predictions = model.predict(X_test)
 

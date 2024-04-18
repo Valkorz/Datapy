@@ -22,7 +22,7 @@ testData = pd.read_csv(testFile) #Load test .csv file
 
 average = dr.average(dataFrame, 'Age')
 dataFrame = dr.correctNan(dataFrame, 'Age')
-
+testData = dr.correctNan(testData, 'Age')
 
 #Get reference statistics (male survivors, female survivors, age average, total survivors)
 
@@ -42,7 +42,7 @@ referenceValues = {"menPercentage": menPercentage, "womenPercentage": womenPerce
 #Train AI (code based on the Titanic Tutorial example at https://www.kaggle.com/code/alexisbcook/titanic-tutorial)
 
 y = dataFrame["Survived"]
-features = ["Age", "Sex"]
+features = ["Age", "Sex", "Pclass"]
 x = pd.get_dummies(dataFrame[features])
 X_test = pd.get_dummies(testData[features])
 

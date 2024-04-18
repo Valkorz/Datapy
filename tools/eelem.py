@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+from typing import TypeVar, Any
 
 #Class to analyze different elements and their count
 class enumeratedElement:
@@ -15,6 +16,7 @@ class enumeratedElement:
     def add(self, element):
         
         contains = 0
+        full = 1
         for i in range(len(self.elements)):
             if self.elements[i] == element:
                 contains = 1
@@ -27,7 +29,25 @@ class enumeratedElement:
                     self.elements[i] = element
                     self.totalElements += 1
                     self.elementCount[i] += 1
+                    full = 0
                     break
+        
+        if full == 1:
+            self.resize(self)
+            self.add(self, element)
+    
+    
+    #Resizes collection
+    def resize(self):
+        newElements = np.full(len(self.elements) + 1, np.nan)
+        newCounts = np.full(len(self.elementCount) + 1, np.nan)
+        
+        for i in range(len(self.elements)):
+            newElements[i] = self.elements[i]
+        
+        for i in range(len(self.elementCount)):
+            newCounts[i] = self.elementCount[i]
+        
     
     #Returns number of times an element has been included
     def count(self, element) -> int:
@@ -40,15 +60,28 @@ class enumeratedElement:
     def remove(self, element, amount : int):
         for i in range(len(self.elements)):
             if self.elements[i] == element and (self.elementCount[i] - amount) > 0:
+                self.totalElements -= amount
                 self.elementCount[i] -= amount
                 return 0
             elif self.elements[i] == element and (self.elementCount[i] - amount) <= 0:
+                self.totalElements -= amount
                 self.elementCount[i] = 0
                 self.elements[i] = np.NaN
                 return 0
             else:
                 print("None of", element, " found.")
                 return -1
+            
+    #Returns most common element
+    def mostCommonElement(self) -> Any:
+        freq = {"Highest":0}
+        num = 0
+        for i in range(len(self.elementCount)):
+            if self.elementCount[i] > num:
+                num = self.elementCount[i]
+                freq["Highest"] = i
+        
+        return self.elements[freq["Highest"]]
     
     #Calculates the percentage of an element over the total number of elements.
     def percentageOf(self, element) -> float:       
@@ -59,15 +92,26 @@ class enumeratedElement:
                 return percentage
         return 0
     
+    #Converts list into dataframe of values
     def toDataFrame(self) -> pd.DataFrame:
         data = pd.DataFrame()
         for i in range(len(self.elements)):
             data.add({f"Interval to: {self.elements[i]}": self.elementCount[i]})
         return data
 
+    #Prints all values out
     def dumpInfo(self):
         for i in range(len(self.elements)):
             print("Element ", self.elements[i], "of index", i ,"has count of: ", self.elementCount[i])
+            
+    def proportions(self) -> dict:
+        propDict = {}
+    
+        for i in range(len(self.elements)):
+            propDict[self.elements[i]] = (self.elementCount[i] / self.totalElements) * 100
+        
+        return propDict
+            
         
             
             

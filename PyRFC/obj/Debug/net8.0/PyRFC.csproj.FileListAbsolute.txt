@@ -1,0 +1,15 @@
+C:\Users\pivar\Documents\Languages\Python\TitanicAI\PyRFC\bin\Debug\net8.0\PyRFC.exe
+C:\Users\pivar\Documents\Languages\Python\TitanicAI\PyRFC\bin\Debug\net8.0\PyRFC.deps.json
+C:\Users\pivar\Documents\Languages\Python\TitanicAI\PyRFC\bin\Debug\net8.0\PyRFC.runtimeconfig.json
+C:\Users\pivar\Documents\Languages\Python\TitanicAI\PyRFC\bin\Debug\net8.0\PyRFC.dll
+C:\Users\pivar\Documents\Languages\Python\TitanicAI\PyRFC\bin\Debug\net8.0\PyRFC.pdb
+C:\Users\pivar\Documents\Languages\Python\TitanicAI\PyRFC\obj\Debug\net8.0\PyRFC.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\pivar\Documents\Languages\Python\TitanicAI\PyRFC\obj\Debug\net8.0\PyRFC.AssemblyInfoInputs.cache
+C:\Users\pivar\Documents\Languages\Python\TitanicAI\PyRFC\obj\Debug\net8.0\PyRFC.AssemblyInfo.cs
+C:\Users\pivar\Documents\Languages\Python\TitanicAI\PyRFC\obj\Debug\net8.0\PyRFC.csproj.CoreCompileInputs.cache
+C:\Users\pivar\Documents\Languages\Python\TitanicAI\PyRFC\obj\Debug\net8.0\PyRFC.sourcelink.json
+C:\Users\pivar\Documents\Languages\Python\TitanicAI\PyRFC\obj\Debug\net8.0\PyRFC.dll
+C:\Users\pivar\Documents\Languages\Python\TitanicAI\PyRFC\obj\Debug\net8.0\refint\PyRFC.dll
+C:\Users\pivar\Documents\Languages\Python\TitanicAI\PyRFC\obj\Debug\net8.0\PyRFC.pdb
+C:\Users\pivar\Documents\Languages\Python\TitanicAI\PyRFC\obj\Debug\net8.0\PyRFC.genruntimeconfig.cache
+C:\Users\pivar\Documents\Languages\Python\TitanicAI\PyRFC\obj\Debug\net8.0\ref\PyRFC.dll

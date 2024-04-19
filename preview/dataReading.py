@@ -2,7 +2,7 @@ import pandas as pd
 import sys
 import numpy as np
 import math as m
-import tools.eelem as em
+import tools.elements as en
 
 #Calculate average of an element inside sample. It's a method that takes two strings and returns a float.
 def average(dataFrame : pd.DataFrame, type : str) -> float:

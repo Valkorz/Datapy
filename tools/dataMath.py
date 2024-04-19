@@ -3,7 +3,7 @@
 #IMPORT
 import pandas as pd
 import numpy as np
-from eelem import enumeratedElement
+from tools.elements import enumeratedElement
 from typing import Any
 import sys
 
@@ -23,31 +23,31 @@ def average(data : pd.DataFrame, type : str) -> Any:
     avg = 0
     nans = 0
     
-    try:
-        if isinstance(data.iloc[0][type], int) or isinstance(data.iloc[0][type], float):                        
-            for i in range(len(data)):
-                currentNum = data.iloc[i][type]
+   
+    if isinstance(data.iloc[0][type], int) or isinstance(data.iloc[0][type], float):                        
+        for i in range(len(data)):
+            currentNum = data.iloc[i][type]
                 
-                if np.isnan(currentNum):
-                    nans += 1
-                    continue
+            if np.isnan(currentNum):
+                nans += 1
+                continue
                 
-                avg += data.iloc[i][type]    
-            avg = avg / (len(data) - nans) 
+            avg += data.iloc[i][type]    
+        avg = avg / (len(data) - nans) 
         
-        else:
-            element = enumeratedElement(5)
-            for i in range(len(data)):
-                currentNum = data.iloc[i][type]
+    else:
+        element = enumeratedElement(5)
+        nan_vals = data[type].isna()
+        for i in range(len(data)):
+            currentNum = data.iloc[i][type]
                 
-                if np.isnan(currentNum):
-                    nans += 1
-                    continue               
-                element.add(currentNum)
+            if nan_vals.iloc[i]:
+                nans += 1
+                continue              
+            element.add(currentNum)
             
-            avg = element.mostCommonElement()
-    except:
-        print("Error:",sys.exc_info()[0], "occured.")
+        avg = element.mostCommonElement()
+  
     
     return avg
 
@@ -62,8 +62,9 @@ def hasNan(data : pd.DataFrame, type : str) -> bool:
         print(f"Column '{type}' not found in DataFrame")
         return -1
     
-    for i in range(len(data)):
-        if np.isnan(data.iloc[i][type]):
+    nan_vals = data[type].isna()
+    for i in range(len(nan_vals)):
+        if np.isnan(nan_vals[i]):
             return True
     
     return False
@@ -73,12 +74,15 @@ def correctNan(data : pd.DataFrame, type : str) -> pd.DataFrame:
     if not isinstance(data, pd.DataFrame) or not isinstance(type, str):
         print("Incorrect parameters. Must be correctNan(DataFrame,str)")
         return -1
-    newData = data
+    newData = data.copy()
     
     avg = average(data, type)
-    for i in range(len(data)):
-        if np.isnan(data.iloc[i][type]):
-            newData.iloc[i][type] = avg
+    if np.issubdtype(data[type].dtype, np.number):
+        for i in range(len(data)):
+            if np.isnan(data.iloc[i][type]):
+                newData.iloc[i][type] = avg
+    else:
+        missing_data = data[type].fillna(avg)
             
     return newData
     
@@ -97,12 +101,20 @@ def getProportion(data : pd.DataFrame, type : str) -> dict:
         print("Incorrect parameters. Must be getProportion(DataFrame,str)")
         return -1
 
-    elements = enumeratedElement(1)
-    for i in range(len(data)):
-        if np.isnan(data.iloc[i][type]): break
-        else:
-            elements.add(data.iloc[i][type])
+    elements = enumeratedElement(len(data))
+    if np.issubdtype(data[type].dtype, np.number):
+        for i in range(len(data)):
+            if np.isnan(data.iloc[i][type]): break
+            else:
+                elements.add(data.iloc[i][type])
+    else:
+        nan_vals = data[type].isna()
+        for i in range(len(data)):
+            if nan_vals[i] == True: break
+            else:
+                elements.add(data.iloc[i][type])
     
+    #print(elements.length())
     return elements.proportions()
             
     
